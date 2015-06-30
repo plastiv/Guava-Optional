@@ -1,0 +1,15 @@
+# Mac OS
+.DS_Store
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/**/*
+
+# Gradle
+.gradle/
+build/
+
+# Local configuration file (sdk path, etc)
+local.properties
