@@ -13,6 +13,7 @@ buildscript {
 configurations {
     injar
     libjar
+    jarjar
 }
 
 String getClassesJar() {
@@ -37,6 +38,8 @@ String getClassesJar() {
 
 def guavaVersion = '18.0'
 def classesJar = files(getClassesJar())
+def proguardOutputFile = "build/libs/proguard_guava_${guavaVersion}.jar"
+def jarjarOutputFile = "build/libs/jarjar_proguard_guava_${guavaVersion}.jar"
 
 repositories {
     mavenCentral()
@@ -46,6 +49,7 @@ dependencies {
     injar "com.google.guava:guava:${guavaVersion}"
     libjar 'com.google.code.findbugs:jsr305:3.0.0'
     libjar classesJar
+    jarjar "com.googlecode.jarjar:jarjar:1.3"
 }
 
 /**
@@ -54,7 +58,7 @@ dependencies {
 task createCustomGuava(type: proguard.gradle.ProGuardTask) {
     injars configurations.injar.files
     libraryjars configurations.libjar.files
-    outjars file("build/libs/guava_${guavaVersion}_base.jar")
+    outjars file(proguardOutputFile)
     configuration "proguard.pro"
 }
 
@@ -63,11 +67,24 @@ publishing {
         maven(MavenPublication) {
             groupId 'com.github.plastiv'
             artifactId 'guava-optional'
-            version '18.0'
+            version guavaVersion
 
-            artifact source: createCustomGuava.outputs.files.singleFile,
+            artifact source: jarjarOutputFile,
                     extension: 'jar',
-                    builtBy: createCustomGuava
+                    builtBy: jarjarCustomGuava
+        }
+    }
+}
+
+task jarjarCustomGuava() {
+    dependsOn createCustomGuava
+    doLast {
+        project.ant {
+            taskdef name: 'jarjar', classname: 'com.tonicsystems.jarjar.JarJarTask', classpath: configurations.jarjar.asPath
+            jarjar(jarfile: jarjarOutputFile) {
+                zipfileset(src: proguardOutputFile)
+                rule pattern: "com.google.common.**", result: "com.google.repacked.common.@1"
+            }
         }
     }
 }
