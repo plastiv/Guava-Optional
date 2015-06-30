@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'net.sf.proguard:proguard-gradle:4.11'
+        classpath 'net.sf.proguard:proguard-gradle:5.0'
     }
 }
 
