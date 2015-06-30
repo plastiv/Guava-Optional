@@ -6,7 +6,8 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'net.sf.proguard:proguard-gradle:5.0'
+        // do not update to 5.2 until understand why it isn't cut out unnecessary classes
+        classpath 'net.sf.proguard:proguard-gradle:5.1'
     }
 }
 
