@@ -10,8 +10,6 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 dependencies {
-	compile 'com.github.plastiv:guava-optional:5297c893a5'
+	compile 'com.github.plastiv:guava-optional:-SNAPSHOT' // or replace '-SNAPSHOT' with exact commit SHA, like '5297c893a5'
 }
 ```
-
-Where `5297c893a5` is the latest commit SHA. 
